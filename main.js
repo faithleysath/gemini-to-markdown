@@ -267,36 +267,60 @@
     // 创建悬浮按钮
     const btn = document.createElement('button');
     btn.className = 'gemini-export-float-btn';
-    btn.textContent = '⬇️ MD';
+    
+    // 使用 SVG 图标使其更美观
+    btn.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      <span>Markdown</span>
+    `;
+
     Object.assign(btn.style, {
       position: 'absolute',
-      top: '12px',
-      right: '12px',
+      top: '16px',
+      right: '16px',
       zIndex: '1000',
-      padding: '8px 16px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      color: 'white',
-      border: 'none',
-      borderRadius: '20px',
-      fontSize: '14px',
+      padding: '8px 14px',
+      background: 'rgba(255, 255, 255, 0.95)',
+      color: '#1e293b',
+      border: '1px solid rgba(226, 232, 240, 0.8)',
+      borderRadius: '8px',
+      fontSize: '13px',
       fontWeight: '600',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       cursor: 'pointer',
-      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
-      transition: 'all 0.3s ease',
-      opacity: '0.9',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      display: 'flex',
+      alignItems: 'center',
+      backdropFilter: 'blur(4px)',
+      opacity: '0.6', // 默认半透明，减少干扰
     });
 
     // 悬停效果
     btn.addEventListener('mouseenter', () => {
-      btn.style.transform = 'scale(1.05)';
-      btn.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.5)';
-      btn.style.opacity = '1';
+      Object.assign(btn.style, {
+        transform: 'translateY(-1px)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        opacity: '1',
+        background: '#ffffff',
+        borderColor: '#cbd5e1',
+        color: '#0f172a',
+      });
     });
 
     btn.addEventListener('mouseleave', () => {
-      btn.style.transform = 'scale(1)';
-      btn.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
-      btn.style.opacity = '0.9';
+      Object.assign(btn.style, {
+        transform: 'translateY(0)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        opacity: '0.6',
+        background: 'rgba(255, 255, 255, 0.95)',
+        borderColor: 'rgba(226, 232, 240, 0.8)',
+        color: '#1e293b',
+      });
     });
 
     // 点击事件 - 执行导出
