@@ -786,6 +786,10 @@
 
     // 关闭逻辑
     const closeModal = () => {
+      // 修复关闭动画失效问题：
+      // 替换 animation 时，上一动画 forwards 状态会丢失，导致瞬间回退到初始 opacity: 0
+      // 必须显式设置当前状态为 1，作为 fadeOut 的起点
+      overlay.style.opacity = "1";
       overlay.style.animation = "geminiMdFadeOut 0.2s ease forwards";
       setTimeout(() => overlay.remove(), 200);
     };
