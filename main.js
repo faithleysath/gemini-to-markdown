@@ -339,7 +339,7 @@
           text-decoration: none;
           flex: 1;
         }
-        .gemini-md-btn:hover { transform: translateY(-2px); }
+        .gemini-md-btn:hover { transform: scale(1.05); }
         .gemini-md-btn:active { transform: scale(0.98); }
 
         .gemini-md-primary {
