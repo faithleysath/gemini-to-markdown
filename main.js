@@ -251,6 +251,30 @@
     createFloatingButton(target, index);
   });
 
+  // === 启动全局定时器，动态扫描并添加按钮 ===
+  let processedContainers = new WeakSet(); // 用于追踪已处理过的容器
+
+  function scanAndAddButtons() {
+    // 扫描所有目标选择器
+    selectors.forEach(selector => {
+      document.querySelectorAll(selector).forEach(container => {
+        // 如果该容器未处理过，则添加按钮
+        if (!processedContainers.has(container)) {
+          // 检查是否已有按钮，避免重复添加
+          if (!container.querySelector('.gemini-export-float-btn')) {
+            createFloatingButton(container, processedContainers.size);
+            processedContainers.add(container);
+          }
+        }
+      });
+    });
+  }
+
+  // 每500ms扫描一次
+  setInterval(scanAndAddButtons, 500);
+
+  console.log('✅ 已启动全局扫描器，每500ms扫描一次目标容器');
+
   // === 创建悬浮按钮 ===
   function createFloatingButton(container, index) {
     // 检查是否已经创建过按钮
