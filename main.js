@@ -288,9 +288,104 @@
       container.style.position = 'relative';
     }
 
-    // 创建悬浮按钮
-    const btn = document.createElement('button');
-    btn.className = 'gemini-export-float-btn';
+    // 创建按钮容器
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'gemini-button-container';
+    Object.assign(buttonContainer.style, {
+      position: 'absolute',
+      top: '-34px',
+      right: '16px',
+      zIndex: '1000',
+      display: 'flex',
+      gap: '8px',
+    });
+
+    // 创建复制按钮（幽灵按钮）
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'gemini-copy-float-btn';
+
+    // 复制图标 SVG
+    const copySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    copySvg.setAttribute("width", "14");
+    copySvg.setAttribute("height", "14");
+    copySvg.setAttribute("viewBox", "0 0 24 24");
+    copySvg.setAttribute("fill", "none");
+    copySvg.setAttribute("stroke", "currentColor");
+    copySvg.setAttribute("stroke-width", "2.5");
+    copySvg.setAttribute("stroke-linecap", "round");
+    copySvg.setAttribute("stroke-linejoin", "round");
+    copySvg.style.marginRight = "6px";
+
+    const copyRect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    copyRect1.setAttribute("x", "9");
+    copyRect1.setAttribute("y", "9");
+    copyRect1.setAttribute("width", "13");
+    copyRect1.setAttribute("height", "13");
+    copyRect1.setAttribute("rx", "2");
+    copyRect1.setAttribute("ry", "2");
+    copySvg.appendChild(copyRect1);
+
+    const copyPath1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    copyPath1.setAttribute("d", "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1");
+    copySvg.appendChild(copyPath1);
+
+    copyBtn.appendChild(copySvg);
+
+    const copySpan = document.createElement("span");
+    copySpan.textContent = "复制";
+    copyBtn.appendChild(copySpan);
+
+    Object.assign(copyBtn.style, {
+      padding: '8px 14px',
+      background: 'rgba(255, 255, 255, 0.5)',
+      color: '#1e293b',
+      border: '1px solid rgba(226, 232, 240, 0.6)',
+      borderRadius: '8px',
+      fontSize: '13px',
+      fontWeight: '600',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      cursor: 'pointer',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      display: 'flex',
+      alignItems: 'center',
+      backdropFilter: 'blur(4px)',
+      opacity: '0.5',
+    });
+
+    // 复制按钮悬停效果
+    copyBtn.addEventListener('mouseenter', () => {
+      Object.assign(copyBtn.style, {
+        transform: 'translateY(-1px)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        opacity: '1',
+        background: 'rgba(255, 255, 255, 0.8)',
+        borderColor: '#cbd5e1',
+        color: '#0f172a',
+      });
+    });
+
+    copyBtn.addEventListener('mouseleave', () => {
+      Object.assign(copyBtn.style, {
+        transform: 'translateY(0)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        opacity: '0.5',
+        background: 'rgba(255, 255, 255, 0.5)',
+        borderColor: 'rgba(226, 232, 240, 0.6)',
+        color: '#1e293b',
+      });
+    });
+
+    // 复制按钮点击事件
+    copyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      copyToMarkdown(container, copyBtn);
+    });
+
+    // 创建导出按钮
+    const exportBtn = document.createElement('button');
+    exportBtn.className = 'gemini-export-float-btn';
 
     // 使用 SVG 图标使其更美观 (使用 DOM 方法避免 innerHTML TrustedHTML 错误)
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -319,17 +414,13 @@
     line.setAttribute("y2", "3");
     svg.appendChild(line);
 
-    btn.appendChild(svg);
+    exportBtn.appendChild(svg);
 
     const span = document.createElement("span");
-    span.textContent = "Markdown";
-    btn.appendChild(span);
+    span.textContent = "导出";
+    exportBtn.appendChild(span);
 
-    Object.assign(btn.style, {
-      position: 'absolute',
-      top: '-34px',
-      right: '16px',
-      zIndex: '1000',
+    Object.assign(exportBtn.style, {
       padding: '8px 14px',
       background: 'rgba(255, 255, 255, 0.95)',
       color: '#1e293b',
@@ -347,9 +438,9 @@
       opacity: '0.6', // 默认半透明，减少干扰
     });
 
-    // 悬停效果
-    btn.addEventListener('mouseenter', () => {
-      Object.assign(btn.style, {
+    // 导出按钮悬停效果
+    exportBtn.addEventListener('mouseenter', () => {
+      Object.assign(exportBtn.style, {
         transform: 'translateY(-1px)',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         opacity: '1',
@@ -359,8 +450,8 @@
       });
     });
 
-    btn.addEventListener('mouseleave', () => {
-      Object.assign(btn.style, {
+    exportBtn.addEventListener('mouseleave', () => {
+      Object.assign(exportBtn.style, {
         transform: 'translateY(0)',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
         opacity: '0.6',
@@ -371,14 +462,77 @@
     });
 
     // 点击事件 - 执行导出
-    btn.addEventListener('click', (e) => {
+    exportBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       exportToMarkdown(container);
     });
 
-    container.appendChild(btn);
+    buttonContainer.appendChild(copyBtn);
+    buttonContainer.appendChild(exportBtn);
+    container.appendChild(buttonContainer);
     console.log(`✅ 悬浮按钮已添加到容器 ${index + 1}`);
+  }
+
+  // === 复制为 Markdown ===
+  async function copyToMarkdown(target, button) {
+    console.log("⏳ 正在复制...");
+
+    const md = htmlToMarkdown(target);
+
+    // 检测是否为中文内容
+    const isChineseContent = getChineseRatio(md) > 0.5;
+
+    // 添加仓库推广 footer（根据内容语言自动切换）
+    const promo = isChineseContent
+      ? `\n\n---\n\n**由 [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown) 复制** ⭐\n\n*一个用于将 Gemini Canvas/Deep Research 页面转换为 Markdown 的 JavaScript 工具*\n`
+      : `\n\n---\n\n**Copied with [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown)** ⭐\n\n*A JavaScript tool to convert Gemini Canvas/Deep Research pages into Markdown*\n`;
+    const finalMd = md + promo;
+
+    try {
+      // 复制到剪贴板
+      await navigator.clipboard.writeText(finalMd);
+
+      console.log(
+        "🎉 复制成功！前500字符预览：\n------------------\n",
+        finalMd.slice(0, 500),
+        "\n\n⭐ Checkout the tool at: https://github.com/faithleysath/gemini-to-markdown"
+      );
+
+      // 临时显示成功状态
+      const originalText = button.querySelector('span').textContent;
+      const checkSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      checkSvg.setAttribute("width", "14");
+      checkSvg.setAttribute("height", "14");
+      checkSvg.setAttribute("viewBox", "0 0 24 24");
+      checkSvg.setAttribute("fill", "none");
+      checkSvg.setAttribute("stroke", "#22c55e");
+      checkSvg.setAttribute("stroke-width", "3");
+      checkSvg.setAttribute("stroke-linecap", "round");
+      checkSvg.setAttribute("stroke-linejoin", "round");
+      checkSvg.style.marginRight = "6px";
+
+      const checkPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      checkPath.setAttribute("d", "M20 6L9 17l-5-5");
+      checkSvg.appendChild(checkPath);
+
+      const oldIcon = button.querySelector('svg');
+      button.replaceChild(checkSvg, oldIcon);
+      button.querySelector('span').textContent = "已复制";
+      button.style.borderColor = "#22c55e";
+      button.style.color = "#22c55e";
+
+      setTimeout(() => {
+        button.replaceChild(oldIcon, checkSvg);
+        button.querySelector('span').textContent = originalText;
+        button.style.borderColor = "rgba(226, 232, 240, 0.6)";
+        button.style.color = "#1e293b";
+      }, 2000);
+
+    } catch (err) {
+      console.error("❌ 复制失败:", err);
+      alert("复制失败，请手动复制");
+    }
   }
 
   // === 导出为 Markdown ===
