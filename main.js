@@ -239,8 +239,13 @@
 
   const md = htmlToMarkdown(target);
 
-  // 添加仓库推广 footer
-  const promo = `\n\n---\n\n**Exported with [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown)** ⭐\n\n*A JavaScript tool to export Gemini Canvas/Deep Research pages into Markdown*\n`;
+  // 检测是否为中文内容，用于后续模态框和 footer
+  const isChineseContent = getChineseRatio(md) > 0.5;
+
+  // 添加仓库推广 footer（根据内容语言自动切换）
+  const promo = isChineseContent
+    ? `\n\n---\n\n**由 [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown) 导出** ⭐\n\n*一个用于将 Gemini Canvas/Deep Research 页面导出为 Markdown 的 JavaScript 工具*\n`
+    : `\n\n---\n\n**Exported with [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown)** ⭐\n\n*A JavaScript tool to export Gemini Canvas/Deep Research pages into Markdown*\n`;
   const finalMd = md + promo;
 
   // 触发下载
@@ -256,8 +261,21 @@
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
+  // === 检测中文字符占比 ===
+  function getChineseRatio(text) {
+    // 匹配中文字符（包括中文标点）
+    const chineseRegex = /[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]/g;
+    const chineseMatches = text.match(chineseRegex) || [];
+    const chineseCount = chineseMatches.length;
+    const totalChars = text.replace(/\s/g, "").length; // 移除空白字符
+    return totalChars > 0 ? chineseCount / totalChars : 0;
+  }
+
   // === 创建推广模态框 ===
   function showPromoModal() {
+    // 使用已检测的语言判断结果
+    const isChinese = isChineseContent;
+
     // 移除已存在的模态框
     const existing = document.getElementById("gemini-md-export-overlay");
     if (existing) existing.remove();
@@ -323,7 +341,7 @@
         }
         .gemini-md-btn:hover { transform: translateY(-2px); }
         .gemini-md-btn:active { transform: scale(0.98); }
-        
+
         .gemini-md-primary {
           background: #1a1f24;
           color: white;
@@ -333,7 +351,7 @@
           background: #000000;
           box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
         }
-        
+
         .gemini-md-danger {
           background-color: #fef2f2;
           color: #dc2626;
@@ -359,7 +377,7 @@
 
     // 标题
     const title = document.createElement("h2");
-    title.textContent = "Export Successful!";
+    title.textContent = isChinese ? "导出成功！" : "Export Successful!";
     Object.assign(title.style, {
       margin: "0 0 12px 0",
       color: "#111827",
@@ -370,16 +388,27 @@
 
     // 副标题
     const subtitle = document.createElement("p");
-    // Replace innerHTML with individual DOM elements to avoid TrustedHTML violation
-    subtitle.append("Saved as ");
-    const b = document.createElement("b");
-    b.textContent = "Markdown";
-    subtitle.append(b, " file.");
-    subtitle.appendChild(document.createElement("br"));
-    const span = document.createElement("span");
-    span.textContent = "If you like this tool, give it a star!";
-    Object.assign(span.style, { fontSize: '14px', opacity: '0.6', marginTop: '4px', display: 'block' });
-    subtitle.appendChild(span);
+    if (isChinese) {
+      subtitle.append("已保存为 ");
+      const b = document.createElement("b");
+      b.textContent = "Markdown";
+      subtitle.append(b, " 文件");
+      subtitle.appendChild(document.createElement("br"));
+      const span = document.createElement("span");
+      span.textContent = "如果觉得这个工具有用，请给个 Star ⭐";
+      Object.assign(span.style, { fontSize: '14px', opacity: '0.6', marginTop: '4px', display: 'block' });
+      subtitle.appendChild(span);
+    } else {
+      subtitle.append("Saved as ");
+      const b = document.createElement("b");
+      b.textContent = "Markdown";
+      subtitle.append(b, " file.");
+      subtitle.appendChild(document.createElement("br"));
+      const span = document.createElement("span");
+      span.textContent = "If you like this tool, give it a star!";
+      Object.assign(span.style, { fontSize: '14px', opacity: '0.6', marginTop: '4px', display: 'block' });
+      subtitle.appendChild(span);
+    }
 
     Object.assign(subtitle.style, {
       margin: "0 0 32px 0",
@@ -402,7 +431,7 @@
     githubBtn.href = "https://github.com/faithleysath/gemini-to-markdown";
     githubBtn.target = "_blank";
     githubBtn.className = "gemini-md-btn gemini-md-primary";
-    
+
     // Create SVG manually to avoid innerHTML
     const ghSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     ghSvg.setAttribute("width", "20");
@@ -413,7 +442,7 @@
     ghPath.setAttribute("d", "M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z");
     ghSvg.appendChild(ghPath);
     githubBtn.appendChild(ghSvg);
-    githubBtn.appendChild(document.createTextNode(" Star GitHub"));
+    githubBtn.appendChild(document.createTextNode(isChinese ? " 给个 Star" : " Star GitHub"));
 
     // 关闭按钮
     const closeBtn = document.createElement("button");
@@ -433,7 +462,7 @@
     closePath.setAttribute("d", "M6 18L18 6M6 6l12 12");
     closeSvg.appendChild(closePath);
     closeBtn.appendChild(closeSvg);
-    closeBtn.appendChild(document.createTextNode(" Close"));
+    closeBtn.appendChild(document.createTextNode(isChinese ? " 关闭" : " Close"));
 
     btnContainer.appendChild(githubBtn);
     btnContainer.appendChild(closeBtn);
