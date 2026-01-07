@@ -240,7 +240,7 @@
   const md = htmlToMarkdown(target);
 
   // 添加仓库推广 footer
-  const promo = `\n\n---\n\n<div align="center">\n\n**Exported with [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown)** ⭐\n\n*A JavaScript tool to export Gemini Canvas/Deep Research pages into Markdown*\n\n</div>\n`;
+  const promo = `\n\n---\n\n**Exported with [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown)** ⭐\n\n*A JavaScript tool to export Gemini Canvas/Deep Research pages into Markdown*\n`;
   const finalMd = md + promo;
 
   // 触发下载
