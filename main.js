@@ -634,7 +634,6 @@
         @keyframes geminiMdFadeIn { to { opacity: 1; } }
         @keyframes geminiMdFadeOut { to { opacity: 0; } }
         @keyframes geminiMdSlideUp { to { opacity: 1; transform: scale(1); } }
-        @keyframes geminiMdSlideDown { to { opacity: 0; transform: scale(0.95); } }
         .gemini-md-btn {
           display: inline-flex;
           align-items: center;
@@ -788,7 +787,6 @@
     // 关闭逻辑
     const closeModal = () => {
       overlay.style.animation = "geminiMdFadeOut 0.2s ease forwards";
-      modal.style.animation = "geminiMdSlideDown 0.2s ease forwards";
       setTimeout(() => overlay.remove(), 200);
     };
 
