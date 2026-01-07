@@ -36,7 +36,7 @@
 ### 方式二：控制台运行 (临时使用)
 
 1. 按 `F12` 打开开发者工具，切换到 **Console**。
-2. 粘贴 `gemini-to-markdown.user.js` 的全部代码并回车。
+2. 粘贴 [gemini-to-markdown.user.js](https://github.com/faithleysath/gemini-to-markdown/blob/main/gemini-to-markdown.user.js) 的全部代码并回车。
 
 ## 🛠️ 格式转换对照表
 
