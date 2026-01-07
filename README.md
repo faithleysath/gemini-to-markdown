@@ -1,64 +1,60 @@
-# Gemini to Markdown
+# Gemini to Markdown Exporter
+
+![License](https://img.shields.io/github/license/faithleysath/gemini-to-markdown)
+![Version](https://img.shields.io/badge/version-1.1-blue)
+![Tampermonkey](https://img.shields.io/badge/Tampermonkey-Supported-green)
 
 **将 Gemini Canvas / Deep Research 页面内容一键导出为 Markdown 格式。**
 
-这是一个 JavaScript 工具，旨在帮助用户将 Google Gemini 的 Canvas 界面、Deep Research 深度搜索结果以及对话内容高质量地转换为 Markdown 文档。支持数学公式、代码块、表格等复杂格式的完美还原。
+这是一个 JavaScript 工具，旨在帮助用户将 [Google Gemini](https://gemini.google.com/) 的 Canvas 界面、Deep Research 深度搜索结果以及普通对话内容高质量地转换为 Markdown 文档。
+
 
 ## ✨ 功能特性
 
-- **一键导出**：自动在页面内容区域（如 Canvas、对话框）添加悬浮按钮，支持「复制」和「导出文件」。
-- **完美兼容**：
-  - 自动识别 `.markdown`, `.ProseMirror`, `.model-response-text` 等常见容器。
-  - 动态扫描：自动检测新加载的内容（如流式输出或新对话）。
-- **格式还原**：
-  - **数学公式**：完美支持 LaTeX 公式（行内 `$latex$` 与 块级 `$$latex$$`）。
+- **🖱️ 一键导出**：自动在页面内容区域（如 Canvas、对话框）添加悬浮按钮，支持「复制到剪贴板」和「导出 .md 文件」。
+- **🔄 智能同步**：
+  - 自动识别 Deep Research、Canvas 及普通聊天界面。
+  - **动态监听**：自动检测流式输出或新加载的对话，无需手动刷新。
+- **📝 完美格式还原**：
+  - **数学公式**：支持 LaTeX 格式（行内 `$latex$` 与 块级 `$$latex$$`）。
   - **代码块**：保留语言标记，还原 ` ```language ` 格式。
   - **表格**：自动转换为 Markdown 表格，支持对齐方式。
-  - **列表**：支持有序列表、无序列表及任务列表（`[ ]` / `[x]`）。
-  - **其他**：支持引用块、折叠详情 (`<details>`)、图片、角标引用等。
+  - **引用与列表**：支持多级列表、任务列表（`[ ]`/`[x]`）及引用块。
+  - **其他**：保留图片链接、角标引用及折叠详情 (`<details>`)。
 
 ## 🚀 如何使用
 
-### 方法一：控制台直接运行 (临时使用)
+### 方式一：油猴脚本 (推荐 ⭐)
 
-1. 打开 [Google Gemini](https://gemini.google.com/) 页面。
-2. 按 `F12` 或右键点击页面选择「检查」打开开发者工具。
-3. 切换到 **Console (控制台)** 标签页。
-4. 将 `main.js` 中的代码完整复制并粘贴到控制台，按回车执行。
-5. 页面右上角会出现 **Copy** 和 **Export** 的悬浮按钮。
+最稳定的使用方式，支持自动更新。
 
-### 方法二：保存为书签 (Bookmarklet)
+1. 确保浏览器已安装 [Tampermonkey](https://www.tampermonkey.net/) 或 Violentmonkey 扩展。
+2. **[👉 点击此处直接安装](https://github.com/faithleysath/gemini-to-markdown/raw/main/gemini-to-markdown.user.js)**
+3. 在弹出的窗口中点击「安装」。
+4. 刷新 Gemini 页面即可看到悬浮按钮。
 
-1. 创建一个新的浏览器书签。
-2. 在「网址」栏填入以下代码（需将 `main.js` 内容压缩为一行）：
-   ```javascript
-   javascript:(function(){/* 这里粘贴 main.js 的全部代码 */})();
-   ```
-3. 需要导出时，点击一下该书签即可。
+### 方式二：控制台运行 (临时使用)
 
-### 方法三：油猴脚本 (推荐)
+1. 按 `F12` 打开开发者工具，切换到 **Console**。
+2. 粘贴 `gemini-to-markdown.user.js` 的全部代码并回车。
 
-如果你安装了 Tampermonkey 或 Violentmonkey 扩展：
-1. 创建新脚本。
-2. 将 `main.js` 的内容粘贴进去。
-3. 设置匹配规则为 `https://gemini.google.com/*`。
-4. 保存后，每次打开 Gemini 页面都会自动加载导出按钮。
-
-## 🛠️ 支持的格式转换
+## 🛠️ 格式转换对照表
 
 | HTML 元素 | Markdown 转换示例 |
-| :--- | :--- |
+| --- | --- |
 | `<h1>` - `<h6>` | `# 标题` |
 | `<b>`, `<strong>` | `**加粗**` |
-| `<i>`, `<em>` | `*斜体*` |
-| `<s>`, `<del>` | `~~删除线~~` |
-| Code Block | \`\`\`language ... \`\`\` |
-| Math (LaTeX) | `$$ ... $$` 或 `$ ... $` |
-| Table | `| Header | ... |` |
-| List (`<ul>`, `<ol>`) | `- 项目` 或 `1. 项目` |
+| Code Block | ```language ... ``` |
+| Math (LaTeX) | `$$...$$` 或 `$ ... $` |
+| Table | ` |
 | Task List | `[ ] 待办` / `[x] 完成` |
-| Blockquote | `> 引用内容` |
-| Link, Image | `[文本](链接)`, `![Alt](图片URL)` |
+| Image | `![Alt](图片URL)` |
+| Clean UI | 自动移除底部的 Sources Carousel、无关按钮 |
+
+## ⚠️ 注意事项
+
+* 本脚本依赖 Google Gemini 的网页结构 (DOM)。如果 Google 更新了界面代码，脚本可能会暂时失效。
+* 欢迎提交 [Issue](https://www.google.com/search?q=https://github.com/faithleysath/gemini-to-markdown/issues) 反馈 Bug 或建议。
 
 ## 📄 License
 
