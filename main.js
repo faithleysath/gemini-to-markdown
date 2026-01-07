@@ -220,7 +220,8 @@
   }
 
   // === 主程序执行 ===
-  // 自动寻找所有可能的容器
+  
+  // 1. 定义选择器
   const selectors = [
     ".markdown",
     ".ProseMirror",
@@ -228,39 +229,16 @@
     "markdown-viewer"
   ];
 
-  const targets = [];
-  selectors.forEach(selector => {
-    document.querySelectorAll(selector).forEach(el => {
-      if (!targets.includes(el)) {
-        targets.push(el);
-      }
-    });
-  });
-
-  if (targets.length === 0) {
-    console.error(
-      "❌ 未找到常见的内容容器 (.markdown, .ProseMirror, .model-response-text)。请手动修改代码中的 target 变量。",
-    );
-    return;
-  }
-
-  console.log(`✅ 找到 ${targets.length} 个目标容器`, targets);
-
-  // 在每个目标容器上添加悬浮按钮
-  targets.forEach((target, index) => {
-    createFloatingButton(target, index);
-  });
-
-  // === 启动全局定时器，动态扫描并添加按钮 ===
+  // 2. 定义扫描函数 (核心逻辑移到这里统一处理)
   let processedContainers = new WeakSet(); // 用于追踪已处理过的容器
 
   function scanAndAddButtons() {
     // 扫描所有目标选择器
     selectors.forEach(selector => {
-      document.querySelectorAll(selector).forEach(container => {
+      document.querySelectorAll(selector).forEach((container, index) => {
         // 如果该容器未处理过，则添加按钮
         if (!processedContainers.has(container)) {
-          // 检查是否已有按钮，避免重复添加
+          // 二次检查：DOM中是否真的已有按钮（防止WeakSet在某些极端情况下失效）
           if (!container.querySelector('.gemini-export-float-btn')) {
             createFloatingButton(container, processedContainers.size);
             processedContainers.add(container);
@@ -270,11 +248,17 @@
     });
   }
 
-  // 每500ms扫描一次
-  setInterval(scanAndAddButtons, 500);
+  // 3. 立即启动定时器 (解决 SPA 动态加载问题)
+  // Gemini 是动态网页，内容是后来加载的，必须依靠定时器或观察者
+  setInterval(scanAndAddButtons, 1000); 
+  
+  // 4. 尝试立即执行一次 (虽然大概率找不到，但为了保险)
+  scanAndAddButtons();
 
-  console.log('✅ 已启动全局扫描器，每500ms扫描一次目标容器');
+  console.log('✅ Gemini Markdown Exporter 已启动，正在监听内容变化...');
 
+  // === 以下保留原本的 createFloatingButton 及后续辅助函数 ===
+  // ... (你的 createFloatingButton, copyToMarkdown 等函数保持不变)
   // === 创建悬浮按钮 ===
   function createFloatingButton(container, index) {
     // 检查是否已经创建过按钮
