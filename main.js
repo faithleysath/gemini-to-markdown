@@ -220,46 +220,133 @@
   }
 
   // === 主程序执行 ===
-  // 自动寻找最可能的容器
-  const target =
-    document.querySelector(".markdown") ||
-    document.querySelector(".ProseMirror") ||
-    document.querySelector(".model-response-text") ||
-    document.querySelector("markdown-viewer");
+  // 自动寻找所有可能的容器
+  const selectors = [
+    ".markdown",
+    ".ProseMirror",
+    ".model-response-text",
+    "markdown-viewer"
+  ];
 
-  if (!target) {
+  const targets = [];
+  selectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach(el => {
+      if (!targets.includes(el)) {
+        targets.push(el);
+      }
+    });
+  });
+
+  if (targets.length === 0) {
     console.error(
       "❌ 未找到常见的内容容器 (.markdown, .ProseMirror, .model-response-text)。请手动修改代码中的 target 变量。",
     );
     return;
   }
 
-  console.log("✅ 目标锁定:", target);
-  console.log("⏳ 正在转换...");
+  console.log(`✅ 找到 ${targets.length} 个目标容器`, targets);
 
-  const md = htmlToMarkdown(target);
+  // 在每个目标容器上添加悬浮按钮
+  targets.forEach((target, index) => {
+    createFloatingButton(target, index);
+  });
 
-  // 检测是否为中文内容，用于后续模态框和 footer
-  const isChineseContent = getChineseRatio(md) > 0.5;
+  // === 创建悬浮按钮 ===
+  function createFloatingButton(container, index) {
+    // 检查是否已经创建过按钮
+    if (container.querySelector('.gemini-export-float-btn')) {
+      return;
+    }
 
-  // 添加仓库推广 footer（根据内容语言自动切换）
-  const promo = isChineseContent
-    ? `\n\n---\n\n**由 [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown) 导出** ⭐\n\n*一个用于将 Gemini Canvas/Deep Research 页面导出为 Markdown 的 JavaScript 工具*\n`
-    : `\n\n---\n\n**Exported with [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown)** ⭐\n\n*A JavaScript tool to export Gemini Canvas/Deep Research pages into Markdown*\n`;
-  const finalMd = md + promo;
+    // 确保容器有相对定位
+    const computedStyle = window.getComputedStyle(container);
+    if (computedStyle.position === 'static') {
+      container.style.position = 'relative';
+    }
 
-  // 触发下载
-  const blob = new Blob([finalMd], { type: "text/markdown;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-  a.download = `universal_export_${timestamp}.md`;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+    // 创建悬浮按钮
+    const btn = document.createElement('button');
+    btn.className = 'gemini-export-float-btn';
+    btn.textContent = '⬇️ MD';
+    Object.assign(btn.style, {
+      position: 'absolute',
+      top: '12px',
+      right: '12px',
+      zIndex: '1000',
+      padding: '8px 16px',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      color: 'white',
+      border: 'none',
+      borderRadius: '20px',
+      fontSize: '14px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+      transition: 'all 0.3s ease',
+      opacity: '0.9',
+    });
+
+    // 悬停效果
+    btn.addEventListener('mouseenter', () => {
+      btn.style.transform = 'scale(1.05)';
+      btn.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.5)';
+      btn.style.opacity = '1';
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'scale(1)';
+      btn.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+      btn.style.opacity = '0.9';
+    });
+
+    // 点击事件 - 执行导出
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      exportToMarkdown(container);
+    });
+
+    container.appendChild(btn);
+    console.log(`✅ 悬浮按钮已添加到容器 ${index + 1}`);
+  }
+
+  // === 导出为 Markdown ===
+  function exportToMarkdown(target) {
+    console.log("⏳ 正在转换...");
+
+    const md = htmlToMarkdown(target);
+
+    // 检测是否为中文内容，用于后续模态框和 footer
+    const isChineseContent = getChineseRatio(md) > 0.5;
+
+    // 添加仓库推广 footer（根据内容语言自动切换）
+    const promo = isChineseContent
+      ? `\n\n---\n\n**由 [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown) 导出** ⭐\n\n*一个用于将 Gemini Canvas/Deep Research 页面导出为 Markdown 的 JavaScript 工具*\n`
+      : `\n\n---\n\n**Exported with [gemini-to-markdown](https://github.com/faithleysath/gemini-to-markdown)** ⭐\n\n*A JavaScript tool to export Gemini Canvas/Deep Research pages into Markdown*\n`;
+    const finalMd = md + promo;
+
+    // 触发下载
+    const blob = new Blob([finalMd], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    a.download = `gemini_export_${timestamp}.md`;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log(
+      "🎉 转换完成！前500字符预览：\n------------------\n",
+      finalMd.slice(0, 500),
+      "\n\n⭐ Checkout the tool at: https://github.com/faithleysath/gemini-to-markdown"
+    );
+
+    // 显示模态框
+    showPromoModal(isChineseContent);
+  }
 
   // === 检测中文字符占比 ===
   function getChineseRatio(text) {
@@ -272,9 +359,7 @@
   }
 
   // === 创建推广模态框 ===
-  function showPromoModal() {
-    // 使用已检测的语言判断结果
-    const isChinese = isChineseContent;
+  function showPromoModal(isChinese) {
 
     // 移除已存在的模态框
     const existing = document.getElementById("gemini-md-export-overlay");
@@ -483,12 +568,4 @@
     closeBtn.onclick = closeModal;
     overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
   }
-
-  showPromoModal();
-
-  console.log(
-    "🎉 转换完成！前500字符预览：\n------------------\n",
-    finalMd.slice(0, 500),
-    "\n\n⭐ Checkout the tool at: https://github.com/faithleysath/gemini-to-markdown"
-  );
 })();
