@@ -332,7 +332,7 @@
     copyBtn.appendChild(copySvg);
 
     const copySpan = document.createElement("span");
-    copySpan.textContent = "复制";
+    copySpan.textContent = "Copy";
     copyBtn.appendChild(copySpan);
 
     Object.assign(copyBtn.style, {
@@ -417,7 +417,7 @@
     exportBtn.appendChild(svg);
 
     const span = document.createElement("span");
-    span.textContent = "导出";
+    span.textContent = "Export";
     exportBtn.appendChild(span);
 
     Object.assign(exportBtn.style, {
@@ -518,7 +518,7 @@
 
       const oldIcon = button.querySelector('svg');
       button.replaceChild(checkSvg, oldIcon);
-      button.querySelector('span').textContent = "已复制";
+      button.querySelector('span').textContent = "Copied!";
       button.style.borderColor = "#22c55e";
       button.style.color = "#22c55e";
 
