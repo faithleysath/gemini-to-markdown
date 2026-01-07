@@ -1,4 +1,19 @@
+// ==UserScript==
+// @name         Gemini to Markdown Exporter
+// @namespace    https://github.com/faithleysath/gemini-to-markdown
+// @version      1.1
+// @description  Export Gemini chat and Deep Research canvas to Markdown with one click. 包含 HTML 转 Markdown 核心逻辑，支持 Deep Research、Canvas 和普通聊天。
+// @author       faithleysath
+// @match        https://gemini.google.com/*
+// @icon         https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg
+// @grant        none
+// @run-at       document-idle
+// @license      MIT
+// ==/UserScript==
 (function () {
+  if (window.__GEMINI_EXPORT_TIMER__) {
+    clearInterval(window.__GEMINI_EXPORT_TIMER__);
+  }
   // === 终极通用版：HTML 转 Markdown ===
   // 兼容：ProseMirror 编辑器、Angular 前端、常见 AI 对话界面
   function htmlToMarkdown(rootElement) {
@@ -250,7 +265,7 @@
 
   // 3. 立即启动定时器 (解决 SPA 动态加载问题)
   // Gemini 是动态网页，内容是后来加载的，必须依靠定时器或观察者
-  setInterval(scanAndAddButtons, 1000); 
+  window.__GEMINI_EXPORT_TIMER__ = setInterval(scanAndAddButtons, 1000);
   
   // 4. 尝试立即执行一次 (虽然大概率找不到，但为了保险)
   scanAndAddButtons();
