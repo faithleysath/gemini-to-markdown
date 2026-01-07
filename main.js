@@ -267,20 +267,43 @@
     // 创建悬浮按钮
     const btn = document.createElement('button');
     btn.className = 'gemini-export-float-btn';
-    
-    // 使用 SVG 图标使其更美观
-    btn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="7 10 12 15 17 10"></polyline>
-        <line x1="12" y1="15" x2="12" y2="3"></line>
-      </svg>
-      <span>Markdown</span>
-    `;
+
+    // 使用 SVG 图标使其更美观 (使用 DOM 方法避免 innerHTML TrustedHTML 错误)
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "14");
+    svg.setAttribute("height", "14");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "2.5");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.style.marginRight = "6px";
+
+    const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path1.setAttribute("d", "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4");
+    svg.appendChild(path1);
+
+    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.setAttribute("points", "7 10 12 15 17 10");
+    svg.appendChild(polyline);
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", "12");
+    line.setAttribute("y1", "15");
+    line.setAttribute("x2", "12");
+    line.setAttribute("y2", "3");
+    svg.appendChild(line);
+
+    btn.appendChild(svg);
+
+    const span = document.createElement("span");
+    span.textContent = "Markdown";
+    btn.appendChild(span);
 
     Object.assign(btn.style, {
       position: 'absolute',
-      top: '16px',
+      top: '-34px',
       right: '16px',
       zIndex: '1000',
       padding: '8px 14px',
