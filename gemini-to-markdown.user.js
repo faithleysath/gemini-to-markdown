@@ -336,9 +336,9 @@
 
     Object.assign(copyBtn.style, {
       padding: '8px 14px',
-      background: 'rgba(255, 255, 255, 0.5)',
+      background: 'rgba(255, 255, 255, 0.95)',
       color: '#1e293b',
-      border: '1px solid rgba(226, 232, 240, 0.6)',
+      border: '1px solid rgba(226, 232, 240, 0.8)',
       borderRadius: '8px',
       fontSize: '13px',
       fontWeight: '600',
@@ -349,7 +349,7 @@
       display: 'flex',
       alignItems: 'center',
       backdropFilter: 'blur(4px)',
-      opacity: '0.5',
+      opacity: '0.6',
     });
 
     // 复制按钮悬停效果
@@ -358,7 +358,7 @@
         transform: 'translateY(-1px)',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         opacity: '1',
-        background: 'rgba(255, 255, 255, 0.8)',
+        background: '#ffffff',
         borderColor: '#cbd5e1',
         color: '#0f172a',
       });
@@ -368,9 +368,9 @@
       Object.assign(copyBtn.style, {
         transform: 'translateY(0)',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
-        opacity: '0.5',
-        background: 'rgba(255, 255, 255, 0.5)',
-        borderColor: 'rgba(226, 232, 240, 0.6)',
+        opacity: '0.6',
+        background: 'rgba(255, 255, 255, 0.95)',
+        borderColor: 'rgba(226, 232, 240, 0.8)',
         color: '#1e293b',
       });
     });
@@ -524,7 +524,7 @@
       setTimeout(() => {
         button.replaceChild(oldIcon, checkSvg);
         button.querySelector('span').textContent = originalText;
-        button.style.borderColor = "rgba(226, 232, 240, 0.6)";
+        button.style.borderColor = "rgba(226, 232, 240, 0.8)";
         button.style.color = "#1e293b";
       }, 2000);
 
