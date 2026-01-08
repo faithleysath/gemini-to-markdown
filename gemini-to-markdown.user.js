@@ -334,44 +334,64 @@
     copySpan.textContent = "Copy";
     copyBtn.appendChild(copySpan);
 
-    Object.assign(copyBtn.style, {
-      padding: '8px 14px',
+    // 检测暗黑模式
+    const isDarkMode = document.body.classList.contains('dark-theme');
+
+    // 根据主题设置按钮样式
+    const buttonStyles = isDarkMode ? {
+      background: 'rgba(30, 30, 30, 0.95)',
+      color: '#e2e8f0',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+    } : {
       background: 'rgba(255, 255, 255, 0.95)',
       color: '#1e293b',
       border: '1px solid rgba(226, 232, 240, 0.8)',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+    };
+
+    const hoverStyles = isDarkMode ? {
+      background: 'rgba(45, 45, 45, 0.98)',
+      borderColor: 'rgba(255, 255, 255, 0.2)',
+      color: '#ffffff',
+    } : {
+      background: '#ffffff',
+      borderColor: '#cbd5e1',
+      color: '#0f172a',
+    };
+
+    Object.assign(copyBtn.style, {
+      padding: '8px 14px',
       borderRadius: '8px',
       fontSize: '13px',
       fontWeight: '600',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       cursor: 'pointer',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
       transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
       display: 'flex',
       alignItems: 'center',
       backdropFilter: 'blur(4px)',
       opacity: '0.6',
+      ...buttonStyles,
     });
 
     // 复制按钮悬停效果
     copyBtn.addEventListener('mouseenter', () => {
       Object.assign(copyBtn.style, {
         transform: 'translateY(-1px)',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        boxShadow: isDarkMode
+          ? '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3)'
+          : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         opacity: '1',
-        background: '#ffffff',
-        borderColor: '#cbd5e1',
-        color: '#0f172a',
+        ...hoverStyles,
       });
     });
 
     copyBtn.addEventListener('mouseleave', () => {
       Object.assign(copyBtn.style, {
         transform: 'translateY(0)',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
         opacity: '0.6',
-        background: 'rgba(255, 255, 255, 0.95)',
-        borderColor: 'rgba(226, 232, 240, 0.8)',
-        color: '#1e293b',
+        ...buttonStyles,
       });
     });
 
@@ -421,42 +441,36 @@
 
     Object.assign(exportBtn.style, {
       padding: '8px 14px',
-      background: 'rgba(255, 255, 255, 0.95)',
-      color: '#1e293b',
-      border: '1px solid rgba(226, 232, 240, 0.8)',
       borderRadius: '8px',
       fontSize: '13px',
       fontWeight: '600',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       cursor: 'pointer',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
       transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
       display: 'flex',
       alignItems: 'center',
       backdropFilter: 'blur(4px)',
-      opacity: '0.6', // 默认半透明，减少干扰
+      opacity: '0.6',
+      ...buttonStyles,
     });
 
     // 导出按钮悬停效果
     exportBtn.addEventListener('mouseenter', () => {
       Object.assign(exportBtn.style, {
         transform: 'translateY(-1px)',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        boxShadow: isDarkMode
+          ? '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3)'
+          : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         opacity: '1',
-        background: '#ffffff',
-        borderColor: '#cbd5e1',
-        color: '#0f172a',
+        ...hoverStyles,
       });
     });
 
     exportBtn.addEventListener('mouseleave', () => {
       Object.assign(exportBtn.style, {
         transform: 'translateY(0)',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
         opacity: '0.6',
-        background: 'rgba(255, 255, 255, 0.95)',
-        borderColor: 'rgba(226, 232, 240, 0.8)',
-        color: '#1e293b',
+        ...buttonStyles,
       });
     });
 
@@ -585,6 +599,9 @@
   // === 创建推广模态框 ===
   function showPromoModal(isChinese) {
 
+    // 检测暗黑模式
+    const isDarkMode = document.body.classList.contains('dark-theme');
+
     // 移除已存在的模态框
     const existing = document.getElementById("gemini-md-export-overlay");
     if (existing) existing.remove();
@@ -598,7 +615,7 @@
       left: "0",
       right: "0",
       bottom: "0",
-      backgroundColor: "rgba(0, 0, 0, 0.6)",
+      backgroundColor: isDarkMode ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.6)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -611,7 +628,7 @@
     // 创建模态框
     const modal = document.createElement("div");
     Object.assign(modal.style, {
-      backgroundColor: "#ffffff",
+      backgroundColor: isDarkMode ? "#1e1e1e" : "#ffffff",
       borderRadius: "20px",
       padding: "32px",
       maxWidth: "420px",
@@ -622,7 +639,7 @@
       animation: "geminiMdSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards",
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       textAlign: "center",
-      border: "1px solid rgba(255,255,255,0.1)",
+      border: isDarkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.1)",
     });
 
     // 添加 CSS 动画与样式
@@ -661,14 +678,25 @@
           box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
         }
 
-        .gemini-md-danger {
-          background-color: #fef2f2;
-          color: #dc2626;
-          border: 1px solid #fee2e2;
+        .gemini-md-secondary {
+          background-color: #f3f4f6;
+          color: #374151;
+          border: 1px solid #e5e7eb;
         }
-        .gemini-md-danger:hover {
-          background-color: #fee2e2;
-          border-color: #fecaca;
+        .gemini-md-secondary:hover {
+          background-color: #e5e7eb;
+          border-color: #d1d5db;
+        }
+
+        /* 暗黑模式样式 */
+        .dark-theme .gemini-md-secondary {
+          background-color: #2d2d2d;
+          color: #e5e7eb;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark-theme .gemini-md-secondary:hover {
+          background-color: #3d3d3d;
+          border-color: rgba(255, 255, 255, 0.2);
         }
       `;
       document.head.appendChild(style);
@@ -689,7 +717,7 @@
     title.textContent = isChinese ? "导出成功！" : "Export Successful!";
     Object.assign(title.style, {
       margin: "0 0 12px 0",
-      color: "#111827",
+      color: isDarkMode ? "#f9fafb" : "#111827",
       fontSize: "24px",
       fontWeight: "800",
       letterSpacing: "-0.5px",
@@ -721,7 +749,7 @@
 
     Object.assign(subtitle.style, {
       margin: "0 0 32px 0",
-      color: "#4b5563",
+      color: isDarkMode ? "#9ca3af" : "#4b5563",
       fontSize: "16px",
       lineHeight: "1.6",
     });
@@ -755,7 +783,7 @@
 
     // 关闭按钮
     const closeBtn = document.createElement("button");
-    closeBtn.className = "gemini-md-btn";
+    closeBtn.className = "gemini-md-btn gemini-md-secondary";
 
     // Create SVG manually to avoid innerHTML
     const closeSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
