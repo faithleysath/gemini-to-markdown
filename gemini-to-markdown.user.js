@@ -678,6 +678,17 @@
           box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
         }
 
+        /* 暗黑模式下的主按钮样式 - 更暗以形成对比 */
+        .dark-theme .gemini-md-primary {
+          background: #0f0f0f;
+          color: white;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .dark-theme .gemini-md-primary:hover {
+          background: #000000;
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+        }
+
         .gemini-md-secondary {
           background-color: #f3f4f6;
           color: #374151;
